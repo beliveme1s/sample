@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DETAIL</title>
+    <link rel="stylesheet"type = "text/css" href="student.css">
+</head>
+<body>
+    <div class="container">
+       <div><h1 text-align="center">STUDENT VERIFICATION</h1></div>
+        <form id="empForm"  method="post">
+        <div class="form-group">
+            <span><label for=" studentname">Student Name :</label> <label id="name">
+            </label></span>
+             <input type="text" name="entry" placeholder="Enter your name" required><br><br>
+             <label for="roll number">Roll Number:</label>
+             <input type="text" class="form-control" id="roll"
+             placeholder="Enter Roll Number" name="roll number"><br><br>
+             <label for="class">Class :</label>
+             <input type="text" class="form-control" id="standard"
+             placeholder="Class" name="class"><br><br>
+             <label for="empEmail">Email:</label>
+             <input type="email" class="form-control" id="empEmail"
+             placeholder="Enter Employee Email" name="empEmail"><br><br>
+        <lable for ="address">Address: </lable>
+        <input type="text" class =" form-control" id =" address" name="entry" placeholder="Address" required><br><br>
+        <label for="datemin">Enter a Date Of Birth:</label>
+        <input type="date" id="datemin" name="datemin" min="2000-01-02"><br><br>
+        <label for="datemin">Enter your enrollment date:</label>
+        <input type="date" id="datemin" name="datemin" min="2000-01-02"><br><br>
+       <input type="button" class="btn btn-primary" id="empSave" value="Save" onclick="saveEmployee();">
+        </div>
+        </form>
+<script>
+    
+    
+        function validateAndGetFormData() {
+var studentname = $("#studentname").val();
+if (studentname === "") {
+alert("Student name Required Value");
+$("#studentname").focus();
+return "";
+}
+var rollnumber = $("#roll").val();
+if (rollnumber === "") {
+alert("Roll Number is Required Value");
+$("#roll").focus();
+return "";
+}
+var standard = $("#standard").val();
+if (standard === "") {
+alert("Class is Required Value");
+$("#standard").focus();
+return "";
+}
+
+var empEmailVar = $("#empEmail").val();
+if (empEmailVar === "") {
+alert("Employee Email is Required Value");
+$("#empEmail").focus();
+return "";
+}
+var Address = $("#address").val();
+if (Address === "") {
+alert("Address is Required Value");
+$("#address").focus();
+return "";
+}
+var jsonStrObj = {
+studentname: studentnameVar,
+standard: standardVar,
+empEmail: empEmailVar
+};
+return JSON.stringify(jsonStrObj);
+}
+function createPUTRequest(connToken, jsonObj, dbName, relName) {
+var putRequest = "{\n"
++ "\"token\" : \""
++ connToken
++ "\","
++ "\"dbName\": \""
++ dbName
++ "\",\n" + "\"cmd\" : \"PUT\",\n"
++ "\"rel\" : \""
++ relName + "\","
++ "\"jsonStr\": \n"
++ jsonObj
++ "\n"
++ "}";
+return putRequest;
+}
+
+
+function executeCommand(reqString, dbBaseUrl, apiEndPointUrl) {
+var url = dbBaseUrl + apiEndPointUrl;
+var jsonObj;
+$.post(url, reqString, function (result) {
+jsonObj = JSON.parse(result);
+}).fail(function (result) {
+var dataJsonObj = result.responseText;
+jsonObj = JSON.parse(dataJsonObj);
+});
+return jsonObj;
+}
+function resetForm() {
+$("#studentname").val("");
+$("#roll").val("");
+$("#standard").val("");
+$("#class").focus();
+}
+
+
+
+    function saveEmployee() {
+var jsonStr = validateAndGetFormData();
+if (jsonStr === "") {
+return;
+}
+var putReqStr = createPUTRequest("90932326|-31949271054577361|90954007",
+jsonStr, "Student", "Stud-rel");
+alert(putReqStr);
+jQuery.ajaxSetup({async: false});
+var resultObj = executeCommand(putReqStr,"http://api.login2explore.com:5577", "/api/iml");
+alert(JSON.stringify(resultObj));
+jQuery.ajaxSetup({async: true});
+resetForm();
+}
+
+</script>
+      
+    </div>
+</body>
+</html>
